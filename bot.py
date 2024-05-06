@@ -14,8 +14,8 @@ load_dotenv()
 
 SYMBOL = "BTCUSDT"
 INTERVAL = 1  # 1,5,15,30,60
-SMA_SHORT = 4
-SMA_LONG = 12
+SMA_SHORT = 30
+SMA_LONG = 100
 URL = "https://api.bybit.com"
 
 
@@ -136,5 +136,8 @@ if __name__ == "__main__":
     while True:
         now = datetime.now()
         if now.second % 60 == 0 and now.minute % INTERVAL == 0:
-            main()
+            try:
+                main()
+            except Exception as e:
+                print(e)
         sleep(1)
