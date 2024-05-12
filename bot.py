@@ -98,11 +98,7 @@ def place_order(side):
         "closeOnTrigger": True,
     }, separators=(',', ':'))
 
-    while True:  # close existing positions
-        response = requests.post(url, data=body, headers=get_headers(body))
-        if response.json()["retMsg"] == "OK":
-            sleep(1)
-            break
+    requests.post(url, data=body, headers=get_headers(body))
 
     body = json.dumps({
         "category": "linear",
@@ -112,11 +108,7 @@ def place_order(side):
         "qty": str(0.001),
     }, separators=(',', ':'))
 
-    while True:  # open new position
-        response = requests.post(url, data=body, headers=get_headers(body))
-        if response.json()["retMsg"] == "OK":
-            sleep(1)
-            break
+    requests.post(url, data=body, headers=get_headers(body))
 
     return "success"
 
