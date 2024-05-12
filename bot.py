@@ -43,6 +43,7 @@ def get_klines():
             return klines[:-1]
         except Exception as e:
             print(e)
+            add_log(e)
 
 
 def get_ohlcv(klines):
@@ -148,4 +149,5 @@ if __name__ == "__main__":
                 main()
             except Exception as e:
                 print(e)
+                add_log(e)
         sleep(1)
