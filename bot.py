@@ -19,6 +19,11 @@ SMA_LONG = 100
 URL = "https://api.bybit.com"
 
 
+def add_log(text):
+    with open("log.txt", "a") as log_file:
+        log_file.write(f"{datetime.now()} {text}\n")
+
+
 def get_klines():
     url = f"{URL}/derivatives/v3/public/kline"
     now = datetime.now()
@@ -125,11 +130,14 @@ def main():
     if sma_short[-2] <= sma_long[-2] and sma_short[-1] >= sma_long[-1]:
         if place_order("Buy") == "success":
             print(datetime.fromtimestamp(int(klines[-1][0][:-3])), "buy on", klines[-1][4])
+            add_log("Buy")
     elif sma_short[-2] >= sma_long[-2] and sma_short[-1] <= sma_long[-1]:
         if place_order("Sell") == "success":
             print(datetime.fromtimestamp(int(klines[-1][0][:-3])), "sell on", klines[-1][4])
+            add_log("Sell")
     else:
         print(datetime.fromtimestamp(int(klines[-1][0][:-3])), "working..")
+        add_log("Working..")
 
 
 if __name__ == "__main__":
