@@ -124,13 +124,16 @@ def main():
         if place_order("Buy") == "success":
             print(datetime.fromtimestamp(int(klines[-1][0][:-3])), "buy on", klines[-1][4])
             add_log("Buy")
+            return
     elif sma_short[-2] >= sma_long[-2] and sma_short[-1] <= sma_long[-1]:
         if place_order("Sell") == "success":
             print(datetime.fromtimestamp(int(klines[-1][0][:-3])), "sell on", klines[-1][4])
             add_log("Sell")
+            return
     else:
         print(datetime.fromtimestamp(int(klines[-1][0][:-3])), "working..")
         add_log("Working..")
+        return
 
 
 if __name__ == "__main__":
