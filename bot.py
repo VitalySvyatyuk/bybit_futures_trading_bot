@@ -8,12 +8,12 @@ from time import sleep
 import numpy as np
 import requests
 from dotenv import load_dotenv
-from talib import SMA
+from talib import SAR, SMA
 
 load_dotenv()
 
 SYMBOL = "BTCUSDT"
-INTERVAL = 1  # 1,5,15,30,60
+INTERVAL = 15  # 1,5,15,30,60
 SMA_SHORT = 30
 SMA_LONG = 100
 URL = "https://api.bybit.com"
@@ -98,7 +98,7 @@ def place_order(side):
         "closeOnTrigger": True,
     }, separators=(',', ':'))
 
-    requests.post(url, data=body, headers=get_headers(body))
+    response = requests.post(url, data=body, headers=get_headers(body))
 
     body = json.dumps({
         "category": "linear",
@@ -108,7 +108,7 @@ def place_order(side):
         "qty": str(0.001),
     }, separators=(',', ':'))
 
-    requests.post(url, data=body, headers=get_headers(body))
+    response = requests.post(url, data=body, headers=get_headers(body))
 
     return "success"
 
@@ -117,15 +117,16 @@ def main():
     klines = get_klines()
     opens, highs, lows, closes, volumes = get_ohlcv(klines)
 
-    sma_short = SMA(closes, timeperiod=SMA_SHORT)
-    sma_long = SMA(closes, timeperiod=SMA_LONG)
+    # sma_short = SMA(closes, timeperiod=SMA_SHORT)
+    # sma_long = SMA(closes, timeperiod=SMA_LONG)
+    psar = SAR(highs, lows)
 
-    if sma_short[-2] <= sma_long[-2] and sma_short[-1] >= sma_long[-1]:
+    if closes[-2] < psar[-2] and closes[-1] > psar[-1]:
         if place_order("Buy") == "success":
             print(datetime.fromtimestamp(int(klines[-1][0][:-3])), "buy on", klines[-1][4])
             add_log("Buy")
             return
-    elif sma_short[-2] >= sma_long[-2] and sma_short[-1] <= sma_long[-1]:
+    elif closes[-2] > psar[-2] and closes[-1] < psar[-1]:
         if place_order("Sell") == "success":
             print(datetime.fromtimestamp(int(klines[-1][0][:-3])), "sell on", klines[-1][4])
             add_log("Sell")
